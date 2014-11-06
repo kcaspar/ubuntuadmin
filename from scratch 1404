@@ -1,0 +1,70 @@
+apt-get update
+apt-get aptitude
+
+#db search for files
+aptitude auto-apt
+auto-apt update
+
+#db search for packages
+aptitude apt-file
+aptitude apt-file update
+
+aptitude -y install build-essential
+aptitude -y install cmake
+aptitude -y install git
+
+aptitude -y install libgtk2.0-dev
+
+aptitude -y install python-numpy
+aptitude -y install python-dev
+
+aptitude -y install libavcodec-dev
+aptitude -y install libavformat-dev
+aptitude -y install libswscale-dev
+
+aptitude -y install libtiff-dev
+#suggested libtbb2 somewhere, but 0packages to be installed
+aptitude -y install libjasper-dev
+
+#suggested somewhere - not done yet
+#libjpeg-dev libpng-dev libtiff-dev
+
+#cmake errors
+#lookedup in ubuntu package search
+
+#--   package 'libv4l1' not found
+aptitude -y install libv4l-dev
+
+#--   package 'libdc1394-2' not found
+#--   package 'libdc1394' not found
+aptitude -y install libdc1394-22-dev
+
+#--   package 'gstreamer-base-0.10' not found
+#installed apt-find, updated to get db
+#searched: apt-file search gstreamer-base-0.10
+aptitude -y install libgstreamer0.10-dev
+#now it came up with new issue
+#--   package 'gstreamer-app-0.10' not found
+#searched: apt-file search gstreamer-app-0.10
+aptitude -y install libgstreamer-plugins-base0.10-dev
+
+#-- Looking for linux/videodev.h - not found
+# aptitude -y install libv4l-dev
+# was installed - so now we need to create links
+find / -name videodev2.h
+cd /usr/include/linux
+#gave /usr/include/linux/videodev2.h
+sudo ln -s ../libv4l1-videodev.h videodev.h
+#create link to .h, supposedly needed for compliance reason, but not used
+
+#-- Looking for ffmpeg/avformat.h - not found
+aptitude -y install libavformat-dev
+# didn't help, was already installed anyway
+# is it a path issue? i.e. cmake doesn't know location?
+
+aptitude install -y openexr
+aptitude install -y libopenexr-dev
+aptitude install -y openexr-viewers
+
+
+
