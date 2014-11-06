@@ -16,4 +16,44 @@ now succeeds
 git status - lists all files and that they are one commit ahead of online repository
 git push
 this synchronizes the commited files to the online repository
+added the new github text file, after push the temp git.txt~ appears.
+git rm git.txt~ locally removes it from the list
+commit and push deletes the file online too
 
+to avoid the user/pwd entry - crate a ssh key
+ssh-keygen -t rsa -C "kcukmail@yahoo.com"
+this creates a ssh key, need to provide a passphrase
+eval "$(ssh-agent -s)"
+this comes back with an agent pid
+ssh-add ~/.ssh/id_rsa
+this adds the key, after entering the passphrase
+cat ~/.ssh/id_rsa.pub
+this lists the key
+add this key to github under personal settings/ssh keys, when copy include the rsa-key in the beginning
+after adding the same number should show up as when creating the key
+
+ssh -T git@github.com
+this tests the connection, spits out warnings (such as host unknown, dont have shell acess...)
+
+now switch from https to ssh
+
+git remote -v
+origin	https://github.com/kcaspar/ubuntuadmin.git (fetch)
+origin	https://github.com/kcaspar/ubuntuadmin.git (push)
+this lists the push and pull origins on github
+
+use set url to switch to ssh:     git remote set-url origin git@github.com:USERNAME/REPOSITORY2.git
+git remote set-url origin git@github.com:kcaspar/ssh://github.com/kcaspar/ubuntuadmin.git
+check if changed: git remote -v, it did
+
+now try and push without pwd....
+didn't work - came up with some fatal: I don't handle protocol 'git@github.com:..../ssh'
+crap must have happened when changing to ssh
+edit .git/config under origin, change the url =  ... 
+url = ssh://git@github.com/kcaspar/ubuntuadmin.git
+
+then git push worked!
+
+git commit
+git commit -m "Adding files"
+git commit -a -m "Changed some files"
