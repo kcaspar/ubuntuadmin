@@ -57,3 +57,6 @@ then git push worked!
 git commit
 git commit -m "Adding files"
 git commit -a -m "Changed some files"
+git commit -m "change some files" file1 file2
+
+http://classic.scottr.org/presentations/git-in-5-minutes/
