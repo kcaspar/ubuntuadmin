@@ -1,0 +1,115 @@
+cuda source:
+
+9.1:
+http://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html
+downloaded and installed, cuda + updates, later cudann (runtime + dev)
+cuda-repo-ubuntu1604-9-1-local_9.1.85-1_amd64.deb
+cuda-repo-ubuntu1604-9-1-local-compiler-update-1_1.0-1_amd64.deb
+cuda-repo-ubuntu1604-9-1-local-cublas-performance-update-1_1.0-1_amd64.deb
+cuda-repo-ubuntu1604-9-1-local-cublas-performance-update-3_1.0-1_amd64.deb
+libcudnn7_7.1.1.5-1+cuda9.1_amd64.deb
+libcudnn7-dev_7.1.1.5-1+cuda9.1_amd64.deb
+
+
+
+
+
+8.0:
+http://developer.download.nvidia.com/compute/cuda/8.0/secure/Prod2/docs/sidebar/CUDA_Installation_Guide_Linux.pdf?sz1EXUAehvixj4LOVnbXEQwZ4oGO3mPj9fAe-fSPwvDzB6cOtVryjRfAevTT9uVyZ9U2ZRkrqaNBSr_SHZjeqUV-xgrcL97zhxvFTVC0T8p6Nye6w3lEQoV7jGr_XjZR15SQXLAbiezU5wm2zxgxVggA-dDjQXzMaalPDT0Sj3biQL_6hn2Hhl4m9Q
+
+
+1. preinstallation actions for a given cuda version (here 8.0
+check gpu, check linux version, kernelversion, gcc installed, kernel headers for dev
+
+lspci | grep -i nvidia
+uname -m && cat /etc/*release
+gcc --version
+uname -r
+sudo apt-get install linux-headers-$(uname -r)
+
+2. download the toolkit, use the .deb which is distribution specific and installs on ubuntu
+if a previous version exists consider the conflict matrix
+then install (1 base and 1 update)
+
+sudo dpkg -i cuda-repo-.....
+sudo apt-get update
+sudo apt-get install cuda
+
+3. postinstallation actions:
+path variable:
+
+make sure path is updated:
+gedit .bashrc     add the following with the correct version
+
+- previous exampole
+export CUDA_HOME=/usr/local/cuda-9.1 
+export LD_LIBRARY_PATH=${CUDA_HOME}/lib64 
+PATH=${CUDA_HOME}/bin:${PATH} 
+export PATH
+
+- used here
+export CUDA_HOME=/usr/local/cuda-8.0
+export PATH=$PATH:/usr/local/cuda-8.0/bin
+export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+check with:
+echo $PATH
+echo $LD_LIBRARY_PATH
+
+run a couple of examples:
+make samples / individual drivers in the dir
+/usr/local/cuda-8.0/samples/1_Utilities/bandwidthTest
+sudo make
+./bandwidthTest
+
+/usr/local/cuda-8.0/samples/1_Utilities/deviceQuery
+sudo make
+./deviceQuery
+
+chekc driver version:
+cat /proc/driver/nvidia/version
+
+
+
+4. install cudaNN, accelerator for NNets
+first teh runtime library
+sudo dpkg -i libcudnn7_7.1.1.5-1+cuda8.0_amd64.deb
+- other: sudo dpkg -i libcudnn7_7.1.1.5-1+cuda9.1_amd64.deb
+
+second the dev libray, 7.1 didn't work because tf wanted 6.0
+once I run the installer it worked, it seem the installer only copies the include, lib files to the cuda location
+hence if a new cudann is required, it may be enoug to just run the appropriate installer
+cudann 6.0, download and install
+sudo dpkg -i libcudnn6_6.0.21-1+cuda8.0_amd64.deb
+
+sudo dpkg -i libcudnn7-dev_7.1.1.5-1+cuda8.0_amd64.deb 
+- other: sudo dpkg -i libcudnn7-dev_7.1.1.5-1+cuda9.1_amd64.deb
+
+
+5. toolkits etc
+
+sudo apt-cache search cuda-command-line-tool, then install the correct version
+cuda-command-line-tools-8-0
+
+the tf install guid is wornt (sudo apt-get install cuda-command-line-tools)
+add the path to the bash:
+/usr/local/cuda/extras/CUPTI/lib64
+
+
+
+
+then 
+
+
+
+
+
+cudann:
+download the cudann_6_for_8_0 library
+unzip with
+tar -xvzf cudnn-8.0-linux-x64-v6.0.tgz
+this only includes the include and lib64 dirs, it is assumed that the rest is available (look at the /usr/local/cuda dir for what else is installed with deb, eg. the )
+create specific dir with and move it to the /usr/local 
+mv cuda cudann_6_for_8_0
+mv cudann_6_for_8_0 /usr/local
+

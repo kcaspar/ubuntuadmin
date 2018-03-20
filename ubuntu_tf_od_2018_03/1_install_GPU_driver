@@ -1,0 +1,32 @@
+https://www.tecmint.com/install-nvidia-drivers-on-ubuntu/
+
+
+under software/updates
+select the official nvida driver to be installed and apply the change
+
+lsmod | grep nvidia
+cat /proc/driver/nvidia/version
+shows 384.111
+
+(ppa: version is a little bit higher)
+
+
+
+
+
+lsmod | grep nouveau
+output should be empty
+neveau should not be configured, the nvdia driver is to be used
+with the above installation method this should not be the case.
+if installed manually the neveau driver may still be configured
+
+
+to disable:
+/etc/modprobe.d/blacklist-nouveau.conf
+blacklist nouveau
+options nouveau modeset=0
+sudo update-initramfs -u
+
+
+
+

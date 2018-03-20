@@ -1,0 +1,64 @@
+#install cudaNN, accelerator for NNets
+# tf wants 7.0, the matching version for cuda 9.0 is cudann 7.04
+# it seems only the runtime library is required - tbc
+# download: libcudnn7_7.0.5.15-1+cuda9.0_amd64.deb
+
+# to install:
+sudo dpkg -i libcudnn7_7.0.5.15-1+cuda9.0_amd64.deb
+#this finished easily
+
+
+#sudo apt-cache search cuda-command-line-tool, then install the correct version
+#cuda-command-line-tools-8-0
+# this was installed already
+
+
+delete below:
+============================================================
+
+
+
+
+
+
+first teh runtime library
+sudo dpkg -i libcudnn7_7.1.1.5-1+cuda8.0_amd64.deb
+- other: sudo dpkg -i libcudnn7_7.1.1.5-1+cuda9.1_amd64.deb
+
+second the dev libray, 7.1 didn't work because tf wanted 6.0
+once I run the installer it worked, it seem the installer only copies the include, lib files to the cuda location
+hence if a new cudann is required, it may be enoug to just run the appropriate installer
+cudann 6.0, download and install
+sudo dpkg -i libcudnn6_6.0.21-1+cuda8.0_amd64.deb
+
+sudo dpkg -i libcudnn7-dev_7.1.1.5-1+cuda8.0_amd64.deb 
+- other: sudo dpkg -i libcudnn7-dev_7.1.1.5-1+cuda9.1_amd64.deb
+
+
+5. toolkits etc
+
+sudo apt-cache search cuda-command-line-tool, then install the correct version
+cuda-command-line-tools-8-0
+
+the tf install guid is wornt (sudo apt-get install cuda-command-line-tools)
+add the path to the bash:
+/usr/local/cuda/extras/CUPTI/lib64
+
+
+
+
+then 
+
+
+
+
+
+cudann:
+download the cudann_6_for_8_0 library
+unzip with
+tar -xvzf cudnn-8.0-linux-x64-v6.0.tgz
+this only includes the include and lib64 dirs, it is assumed that the rest is available (look at the /usr/local/cuda dir for what else is installed with deb, eg. the )
+create specific dir with and move it to the /usr/local 
+mv cuda cudann_6_for_8_0
+mv cudann_6_for_8_0 /usr/local
+

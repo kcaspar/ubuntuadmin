@@ -1,0 +1,15 @@
+#/bin/bash
+
+sudo apt-get update
+sudo apt-get upgrade
+
+sudo apt-get install build-essential git
+
+#both python 2.7 and 3.5.2 are installed out of the box
+#don't want to upgrade just yet to 3.6 and don't want to have 3 pythons on the system either-> #install anaconda2
+#download and run:
+#their script, then update:
+conda update -n base conda
+
+
+

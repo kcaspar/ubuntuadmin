@@ -1,0 +1,143 @@
+install tf ojbect detection module:
+
+https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/installation.md
+
+1. the tf installation install a number of modules which are listed separatedly as required by od, check with dpkg -l to see if it was installed already
+2. install systemwide where possible
+
+
+
+=====================================
+prepare conda enf and install tf, with the system suggested version
+the related cuda and cudann version turn up when trying to test tf
+
+conda create -n tf_od python=3.5
+source activate tf_od
+
+
+pip install tensorflow_gpu
+
+then test the installation:
+# Python
+import tensorflow as tf
+hello = tf.constant('Hello, TensorFlow!')
+sess = tf.Session()
+print(sess.run(hello))
+
+
+importing tf leads to cuda error:
+ImportError: libcublas.so.9.0: cannot open shared object file: No such file or directory
+
+it needs cuda 9.0 -> isntallation see separate file
+
+import tf again, now the error is a missing cudann
+ImportError: libcudnn.so.7: cannot open shared object file: No such file or directory
+it needs cudann7 -> installation see separate file
+
+import tf again, now tf works , move on to the object detector
+
+==================================================================================
+next install the required packages, first check if it was install already and if yes upgrade
+
+Tensorflow Object Detection API depends on the following libraries:
+
+    Protobuf 2.6
+    Python-tk
+    Pillow 1.0
+    lxml
+    #tf Slim (which is included in the "tensorflow/models/research/" checkout)
+    Jupyter notebook
+    Matplotlib
+    Tensorflow
+    cocoapi
+
+
+dpkg -l | grep protobuf
+
+dpkg -l | grep python | grep tk
+sudo apt-get install --dry-run python-tk
+
+=========================================
+decided to install the python package, since it could be version sensitive
+conda install -c anaconda tk
+and then kept installing inddivually:
+
+#not protobuf since installed globally conda install -c anaconda protobuf 
+conda install -c anaconda tk
+conda install -c anaconda pillow
+conda install -c anaconda lxml
+#python -c "import tensorflow.contrib.slim as slim; eval = slim.evaluation.evaluate_once"
+conda install -c anaconda notebook
+conda install -c conda-forge matplotlib
+pip install tensorflow-gpu
+
+cocopai needs:
+conda install -c anaconda cython
+
+=======================================================
+this gives an overview which includes which gits to clone:
+https://medium.com/@WuStangDan/step-by-step-tensorflow-object-detection-api-tutorial-part-1-selecting-a-model-a02b6aabe39e
+
+1. conda installs = see above
+2. coco dataset install
+3. protobuf config
+4. configurations
+
+
+# get the models and the dataset
+git clone https://github.com/tensorflow/models.git
+git clone https://github.com/cocodataset/cocoapi.git
+
+
+=========================================
+2. install cocodataset
+
+cd cocoapi/PythonAPI
+make
+# needs cython .... see above
+# copy the result to the tensorflow path:		cp -r pycocotools <path_to_tensorflow>/models/research/
+# the target dir is in the model clone, not the anaconda install dir !!!!!!!
+cp -r pycocotools /media/jconnor/media/University/models_etc/tf_models/models/research
+
+
+# those following lines are taking teh wrong path
+# with tensorflow path:
+# pip show tensorflow-gpu
+# /home/jconnor/anaconda2/envs/tf_od/lib/python3.5/site-packages
+# cp -r pycocotools /home/jconnor/anaconda2/envs/tf_od/lib/python3.5/site-packages/models/research/
+# which is of course fucked up, because it should probably be the research path from the git download which is :
+#/media/jconnor/media/University/models_etc/tf_models/models/research
+#now this worked
+
+
+=========================================
+3. protobuf compilation:
+# From tensorflow/models/research/
+# this needs the compiler ....
+sudo apt install protobuf-compiler
+
+cd /media/jconnor/media/University/models_etc/tf_models/models/research
+protoc object_detection/protos/*.proto --python_out=.
+
+
+
+=========================================
+4 configurations
+# add location of slim directories, those are in the model clone 
+# From tensorflow/models/research/
+export PYTHONPATH=$PYTHONPATH:`pwd`:`pwd`/slim
+
+# or add to .bashrc, but this is 
+export PYTHONPATH=$PYTHONPATH:/media/jconnor/media/University/models_etc/tf_models/models/research/slim
+not persistent, to cope add to .bashrc, but how does it work with conda
+
+
+=========================================
+
+test the installation, this should complete without errors:
+
+python object_detection/builders/model_builder_test.py
+
+
+
+

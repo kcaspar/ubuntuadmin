@@ -1,0 +1,63 @@
+
+#installation guide for 9.0
+
+#check gpu, linux version, gcc compiler, kernel, kernel header files for dev:
+
+
+lspci | grep -i nvidia
+uname -m && cat /etc/*release
+gcc --version
+uname -r
+sudo apt-get install linux-headers-$(uname -r)
+
+#installation method .deb:
+#download toolkit and 2 patches:
+#cuda-repo-ubuntu1604-9-0-local_9.0.176-1_amd64.deb
+#cuda-repo-ubuntu1604-9-0-local-cublas-performance-update_1.0-1_amd64.deb
+#cuda-repo-ubuntu1604-9-0-local-cublas-performance-update-2_1.0-1_amd64.deb
+
+
+#install toolikit:
+sudo dpkg -i cuda-repo-ubuntu1604-9-0-local_9.0.176-1_amd64.deb
+
+#it first wants some fricking key installed:
+sudo apt-key add /var/cuda-repo-9-0-local/7fa2af80.pub
+
+# then it works, now install updates:
+sudo dpkg -i cuda-repo-ubuntu1604-9-0-local-cublas-performance-update_1.0-1_amd64.deb
+sudo dpkg -i cuda-repo-ubuntu1604-9-0-local-cublas-performance-update-2_1.0-1_amd64.deb
+
+# then update and install
+sudo apt-get update
+sudo apt-get install cuda
+
+#luckily the driver showed up to be 384.111, either it was apt-getted, or the installer did it. Better to install first ....
+#this also seems to install the toolchain etc
+
+
+#Post installation:
+
+#update the path:
+export CUDA_HOME=/usr/local/cuda-8.0
+export PATH=$PATH:/usr/local/cuda-8.0/bin
+export LD_LIBRARY_PATH=/usr/local/cuda-8.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+#check with:
+echo $PATH
+echo $LD_LIBRARY_PATH
+
+
+#run a couple of examples:
+#make samples / individual drivers in the dir
+cd /usr/local/cuda-9.0/samples/1_Utilities/bandwidthTest
+sudo make
+./bandwidthTest
+
+cd /usr/local/cuda-9.0/samples/1_Utilities/deviceQuery
+sudo make
+./deviceQuery
+
+#chekc driver version:
+cat /proc/driver/nvidia/version
+
+#so far so good:
